@@ -24,6 +24,14 @@ export default function Recipes({ recipes }) {
       {recipes.map(recipe => (
         <RecipeCard key={recipe.sys.id} recipe={recipe} />
       ))}
+
+      <style jsx>{`
+        .recipe-list {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+          grid-gap: 20px 60px;
+        }
+      `}</style>
     </div>
   )
 }
