@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { contentfulClient } from "../../helpers"
+import Skeleton from '../../components/Skeleton'
 
 export async function getStaticPaths() {
 
@@ -16,17 +17,25 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   }
 }
 
 export async function getStaticProps({ params }) {
   const { slug } = params
-
   const { items } = await contentfulClient.getEntries({
     content_type: 'recipe',
     'fields.slug': slug
   })
+
+  if (!items.length) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
 
   return {
     props: {
@@ -37,6 +46,10 @@ export async function getStaticProps({ params }) {
 }
 
 export default function RecipeDetails({ recipe }) {
+  if (!recipe) {
+    return <Skeleton />
+  }
+
   const { featuredImage, title, cookingTime, ingredients, method } = recipe.fields
 
   return (
